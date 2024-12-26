@@ -1,14 +1,29 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { cn } from "@/lib/utils";
+import AutoScroll from "embla-carousel-auto-scroll";
 
-const slides = [
+import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { Amatic_SC } from "next/font/google";
+import { CustomButton } from "./button";
+import Link from "next/link";
+import { ChevronRightIcon, HeartIcon } from "lucide-react";
+
+const amaticSC = Amatic_SC({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
+
+const defaultSlides = [
   {
     id: 1,
     image:
@@ -38,10 +53,38 @@ interface CarouselProps {
   }[];
 }
 
-export function HeroCarousel({ slides }: CarouselProps) {
+export function HeroCarousel({ slides = defaultSlides }: CarouselProps) {
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const plugins = [
+    AutoScroll({
+      speed: 0,
+    }),
+  ];
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCount(slides.length);
+    setCurrent(api.selectedScrollSnap());
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api, slides]);
+
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
-      <Carousel className="w-full h-full">
+    <div className="relative w-full md:h-screen overflow-hidden">
+      <Carousel
+        setApi={setApi}
+        opts={{}}
+        plugins={plugins}
+        className="w-full h-full"
+      >
         <CarouselContent>
           {slides?.map((slide, index) => (
             <CarouselItem key={index}>
@@ -50,32 +93,59 @@ export function HeroCarousel({ slides }: CarouselProps) {
                   className="absolute inset-0 bg-cover bg-center"
                   style={{ backgroundImage: `url(${slide.image})` }}
                 >
-                  <div className="absolute inset-0 bg-black/40" />
+                  <div
+                    className="absolute inset-0"
+                    style={{ backgroundColor: `rgba(0, 0, 0, 0.7)` }}
+                  />
                 </div>
-                <div className="relative h-full flex flex-col justify-center items-center text-white p-6">
+                <div className="relative h-full flex flex-col justify-center items-start text-white p-[48px] max-w-[720px]">
+                  <h3 className={`${amaticSC.className} text-[32px] mb-[20px]`}>
+                    Our Goals
+                  </h3>
                   <h2
                     className={cn(
-                      "text-4xl md:text-6xl font-bold mb-4",
-                      "animate-in slide-in-from-bottom duration-1000"
+                      "text-[80px] md:text-[72px] font-bold mb-4 leading-none"
                     )}
                   >
-                    Explore Nature
+                    End poverty in all its forms, in Africa.
                   </h2>
                   <p
                     className={cn(
-                      "text-xl md:text-2xl max-w-2xl text-center",
+                      "text-xl md:text-2xl max-w-2xl text-left font-extralight",
                       "animate-in slide-in-from-bottom duration-1000 delay-150"
                     )}
                   >
-                    Get lost in the magical forest atmosphere
+                    Poverty denies children their fundamental rights to health,
+                    protection, education and much more. Without global action,
+                    child poverty is likely to entrench social inequality ...{" "}
                   </p>
+                  <div className="py-8 flex space-x-[32px] items-center">
+                    <Link
+                      href="#"
+                      className="flex items-center rounded-[28px] px-6 py-3 space-x-[10px] bg-[#2f9114]"
+                    >
+                      <span className="">LEARN MORE</span>
+                      <ChevronRightIcon className="size-8" />
+                    </Link>
+                    <Link
+                      href="#"
+                      className="flex items-center rounded-[28px] px-[32px] py-3 space-x-[8px] bg-white text-[#2f9114]"
+                    >
+                      <span className="">DONATE NOW</span>
+                      <HeartIcon className="size-8" />
+                    </Link>
+                  </div>
                 </div>
               </Card>
             </CarouselItem>
           ))}
+          <div className="bg-black/50 px-8 py-2 flex items-center justify-center"></div>
         </CarouselContent>
-        <CarouselPrevious className="left-4 bg-white/10 hover:bg-white/20 border-none text-white" />
-        <CarouselNext className="right-4 bg-white/10 hover:bg-white/20 border-none text-white" />
+        <div className="absolute bg-black/50 bottom-4 right-4 px-8 py-2">
+          <span className="text-white">{`${current + 1}/${count}`}</span>
+        </div>
+        <CarouselPrevious className="md:hidden left-4 bg-white/10 hover:bg-white/20 border-none text-white" />
+        <CarouselNext className="md:hidden right-4 bg-white/10 hover:bg-white/20 border-none text-white" />
       </Carousel>
     </div>
   );

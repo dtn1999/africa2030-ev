@@ -13,11 +13,12 @@ export interface ButtonProps {
   variant?: "solid" | "outline" | "ghost" | "link";
   primaryColor: string;
   secondaryColor: string;
+  className?: string;
 }
 
 export function CustomButton({ ...props }: ButtonProps) {
   console.log("props ", props);
-  const { attributes = {}, link, text, openLinkInNewTab } = props;
+  const { attributes = {}, link, text, className, openLinkInNewTab } = props;
   const { key, ...restAttributes } = attributes;
   const Tag = link ? Link : "span";
 
@@ -26,6 +27,7 @@ export function CustomButton({ ...props }: ButtonProps) {
       role="button"
       href={link ?? "#"}
       target={openLinkInNewTab ? "_blank" : undefined}
+      className={className}
       key={undefined}
       {...restAttributes}
     >

@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Nunito_Sans, Amatic_SC } from "next/font/google";
+import "@/css/globals.css";
+import "@/css/embla.css";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { ContactDialog } from "@/components/layout/contact-dialog";
+import { builder } from "@builder.io/sdk";
+import { ScrollToTopButton } from "@/components/layout/scroll-up-button";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const nunitoSans = Nunito_Sans({
+  variable: "--font-nunito-sans",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "1000"],
 });
 
 export const metadata: Metadata = {
@@ -22,12 +24,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const settings = await builder.get("website-general-setting").toPromise();
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${nunitoSans.className} antialiased`}>
+        <Header />
+        {/* <ContactDialog /> */}
         {children}
+        <ScrollToTopButton />
+        <Footer />
       </body>
     </html>
   );
