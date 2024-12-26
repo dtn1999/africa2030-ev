@@ -28,8 +28,9 @@ const defaultSlides = [
     id: 1,
     image:
       "https://images.unsplash.com/photo-1492724441997-5dc865305da7?q=80&w=1920",
-    title: "Explore Nature",
-    description: "Discover the beauty of untouched landscapes",
+    title: "End poverty in all its forms, everywhere.",
+    description:
+      " Poverty denies children their fundamental rights to health, protection, education and much more. Without global action, child poverty is likely to entrench social inequality ...",
   },
   {
     id: 2,
@@ -50,6 +51,8 @@ const defaultSlides = [
 interface CarouselProps {
   slides: {
     image: string;
+    title: string;
+    description: string;
   }[];
 }
 
@@ -98,42 +101,44 @@ export function HeroCarousel({ slides = defaultSlides }: CarouselProps) {
                     style={{ backgroundColor: `rgba(0, 0, 0, 0.7)` }}
                   />
                 </div>
-                <div className="relative h-full flex flex-col justify-center items-start text-white p-[48px] max-w-[720px]">
-                  <h3 className={`${amaticSC.className} text-[32px] mb-[20px]`}>
-                    Our Goals
-                  </h3>
-                  <h2
-                    className={cn(
-                      "text-[80px] md:text-[72px] font-bold mb-4 leading-none"
-                    )}
-                  >
-                    End poverty in all its forms, in Africa.
-                  </h2>
-                  <p
-                    className={cn(
-                      "text-xl md:text-2xl max-w-2xl text-left font-extralight",
-                      "animate-in slide-in-from-bottom duration-1000 delay-150"
-                    )}
-                  >
-                    Poverty denies children their fundamental rights to health,
-                    protection, education and much more. Without global action,
-                    child poverty is likely to entrench social inequality ...{" "}
-                  </p>
-                  <div className="py-8 flex space-x-[32px] items-center">
-                    <Link
-                      href="#"
-                      className="flex items-center rounded-[28px] px-6 py-3 space-x-[10px] bg-[#2f9114]"
+                <div className="container mx-auto relative flex items-center h-full text-white p-[48px]">
+                  <div className="md:max-w-[640px]">
+                    <h3
+                      className={`${amaticSC.className} text-[32px] mb-[20px]`}
                     >
-                      <span className="">LEARN MORE</span>
-                      <ChevronRightIcon className="size-8" />
-                    </Link>
-                    <Link
-                      href="#"
-                      className="flex items-center rounded-[28px] px-[32px] py-3 space-x-[8px] bg-white text-[#2f9114]"
+                      Our Goals
+                    </h3>
+                    <h2
+                      className={cn(
+                        "text-[80px] md:text-[72px] font-bold mb-4 leading-none"
+                      )}
                     >
-                      <span className="">DONATE NOW</span>
-                      <HeartIcon className="size-8" />
-                    </Link>
+                      {slide.title}
+                    </h2>
+                    <p
+                      className={cn(
+                        "text-xl md:text-2xl max-w-2xl text-left font-extralight",
+                        "animate-in slide-in-from-bottom duration-1000 delay-150"
+                      )}
+                    >
+                      {slide.description}
+                    </p>
+                    <div className="py-8 flex space-x-[32px] items-center">
+                      <Link
+                        href="#"
+                        className="flex items-center rounded-[28px] px-6 py-3 space-x-[10px] bg-[#2f9114]"
+                      >
+                        <span className="">LEARN MORE</span>
+                        <ChevronRightIcon className="size-8" />
+                      </Link>
+                      <Link
+                        href="#"
+                        className="flex items-center rounded-[28px] px-[32px] py-3 space-x-[8px] bg-white text-[#2f9114]"
+                      >
+                        <span className="">DONATE NOW</span>
+                        <HeartIcon className="size-8" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </Card>
