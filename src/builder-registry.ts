@@ -1,50 +1,56 @@
 "use client";
-import { builder, Builder } from "@builder.io/react";
-import Counter from "./components/Counter/Counter";
-import { Socials } from "./components/socials";
-import { NewsLetterForm } from "./components/newsletter-form";
+import { builder, Builder, withChildren } from "@builder.io/react";
 import { CustomButton } from "./components/button";
 import { HeroCarousel } from "./components/hero-carousel";
-import { SectionCarousel } from "./components/section-carousel";
+import { Header } from "./components/layout/header";
+import { Banner } from "./components/banner";
+import { ImageGallery } from "./components/image-gallery";
+import { ResourceCard } from "./components/resource-card";
+import { SponsorCarousel } from "./components/sponsor-carousel";
 
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
 
+// Design Tokens
 Builder.register("editor.settings", {
   designTokens: {
     colors: [
       { name: "White", value: "#fff" },
-      // Orange
-      { name: "Brand Orange Default", value: "#F74F22" },
-      { name: "Brand Orange Light", value: "#FFAC00" },
-      { name: "Brand Orange Dark", value: "#B93B1A" },
-      // Green
-      { name: "Brand Green Dark", value: "#049013" },
-      { name: "Brand Green Default", value: "#8CAB2E" },
-      { name: "Brand Green Light", value: "#61CE70" },
-      // Coral
-      { name: "Brand Coral Dark", value: "#AE7B50" },
-      { name: "Brand Coral Default", value: "#C88C5E" },
-      { name: "Brand Coral Light", value: "#A5877A" },
-      // Red
-      { name: "Brand Red Dark", value: "#A00" },
-      { name: "Brand Red Default", value: "#B90000" },
-      { name: "Brand Red Light", value: "#DA6D6D" },
-      // Desert
-      { name: "Brand Desert Dark", value: "#AE7B50" },
-      { name: "Brand Desert Default", value: "#C88C5E" },
-      { name: "Brand Desert Light", value: "#A5877A" },
-      // Indigo
-      { name: "Brand Green Dark", value: "#4054B2" },
-      { name: "Brand Green Default", value: "#543FD7" },
-      { name: "Brand Green Light", value: "#7D89F8" },
+      { name: "Black", value: "#000" },
       // Gray
-      { name: "Brand Gray Darker", value: "#161617" },
-      { name: "Brand Gray Dark", value: "#232323" },
-      { name: "Brand Gray Default", value: "#616161" },
-      { name: "Brand Gray Light", value: "#C9C9C9" },
+      { name: "Primary", value: "#049013" },
+      { name: "Secondary", value: "#51C147" },
+      { name: "Text", value: "#616161" },
+      { name: "Headings", value: "#232323" },
+      { name: "Footer", value: "#222329" },
+      { name: "Background", value: "#fff" },
     ],
     // other design tokens
   },
+});
+
+Builder.registerComponent(withChildren(Header), {
+  name: "Header",
+  canHaveChildren: true,
+  noWrap: true,
+  childRequirements: {
+    message:
+      "You can only put Box, Columns, or Button, in the call to action of ",
+    query: {
+      "component.name": { $in: ["Core:Columns", "Core:Box", "Core:Button"] },
+    },
+  },
+  inputs: [
+    {
+      name: "navigation",
+      type: "reference",
+      model: "navigation-links",
+    },
+    {
+      name: "sticky",
+      type: "boolean",
+      defaultValue: true,
+    },
+  ],
 });
 
 Builder.registerComponent(CustomButton, {
@@ -104,9 +110,81 @@ Builder.registerComponent(CustomButton, {
 
 Builder.registerComponent(HeroCarousel, {
   name: "HeroCarousel",
+  noWrap: true,
   inputs: [
     {
       name: "slides",
+      type: "list",
+      subFields: [
+        {
+          name: "image",
+          type: "file",
+          allowedFileTypes: ["jpeg", "jpg", "png", "gif"],
+          required: true,
+        },
+        {
+          name: "title",
+          type: "text",
+          localized: true,
+        },
+        {
+          name: "description",
+          type: "longText",
+          localized: true,
+        },
+        {
+          name: "link",
+          type: "url",
+        },
+      ],
+    },
+    {
+      name: "autoplay",
+      type: "boolean",
+      defaultValue: false,
+    },
+    {
+      name: "autoplaySpeed",
+      type: "number",
+      defaultValue: 3000,
+      friendlyName: "Autoplay Speed (ms)",
+    },
+    {
+      name: "showArrows",
+      type: "boolean",
+      defaultValue: true,
+      friendlyName: "Show Navigation Arrows",
+    },
+    {
+      name: "showDots",
+      type: "boolean",
+      defaultValue: true,
+      friendlyName: "Show Navigation Dots",
+    },
+  ],
+});
+
+Builder.registerComponent(Banner, {
+  name: "Banner",
+  inputs: [
+    {
+      name: "image",
+      type: "file",
+      allowedFileTypes: ["jpeg", "jpg", "png", "gif"],
+      required: true,
+    },
+    {
+      name: "link",
+      type: "url",
+    },
+  ],
+});
+
+Builder.registerComponent(ImageGallery, {
+  name: "ImageGallery",
+  inputs: [
+    {
+      name: "images",
       type: "list",
       subFields: [
         {
@@ -119,96 +197,61 @@ Builder.registerComponent(HeroCarousel, {
           name: "caption",
           type: "text",
         },
-        {
-          name: "link",
-          type: "url",
-        },
       ],
-    },
-    {
-      name: "autoplay",
-      type: "boolean",
-      defaultValue: false,
-    },
-    {
-      name: "autoplaySpeed",
-      type: "number",
-      defaultValue: 3000,
-      friendlyName: "Autoplay Speed (ms)",
-    },
-    {
-      name: "showArrows",
-      type: "boolean",
-      defaultValue: true,
-      friendlyName: "Show Navigation Arrows",
-    },
-    {
-      name: "showDots",
-      type: "boolean",
-      defaultValue: true,
-      friendlyName: "Show Navigation Dots",
     },
   ],
 });
 
-Builder.registerComponent(SectionCarousel, {
-  name: "SectionCarousel",
+Builder.registerComponent(ResourceCard, {
+  name: "ResourceCard",
   inputs: [
     {
-      name: "slides",
+      name: "title",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "tag",
+      type: "text",
+      required: false,
+    },
+    {
+      name: "description",
+      type: "richText",
+    },
+    {
+      name: "image",
+      type: "file",
+      allowedFileTypes: ["jpeg", "jpg", "png", "gif"],
+    },
+    {
+      name: "link",
+      type: "url",
+    },
+  ],
+});
+
+Builder.registerComponent(SponsorCarousel, {
+  name: "SponsorCarousel",
+  inputs: [
+    {
+      name: "sponsors",
       type: "list",
       subFields: [
         {
-          name: "image",
-          type: "file",
-          allowedFileTypes: ["jpeg", "jpg", "png", "gif"],
-          required: true,
+          name: "website",
+          type: "url",
         },
         {
-          name: "link",
-          type: "url",
+          name: "name",
+          type: "text",
+        },
+        {
+          name: "logo",
+          type: "file",
+          allowedFileTypes: ["jpeg", "jpg", "png", "gif"],
         },
       ],
     },
-    {
-      name: "autoplay",
-      type: "boolean",
-      defaultValue: false,
-    },
-    {
-      name: "autoplaySpeed",
-      type: "number",
-      defaultValue: 3000,
-      friendlyName: "Autoplay Speed (ms)",
-    },
-    {
-      name: "showArrows",
-      type: "boolean",
-      defaultValue: true,
-      friendlyName: "Show Navigation Arrows",
-    },
-    {
-      name: "showDots",
-      type: "boolean",
-      defaultValue: true,
-      friendlyName: "Show Navigation Dots",
-    },
-    {
-      name: "dotsAlignment",
-      type: "string",
-      defaultValue: "right",
-      enum: ["left", "center", "right"],
-      friendlyName: "Position of the dots",
-    },
   ],
-});
-
-Builder.registerComponent(Socials, {
-  name: "SocialLinks",
-  inputs: [],
-});
-
-Builder.registerComponent(NewsLetterForm, {
-  name: "NewsletterForm",
-  inputs: [],
 });

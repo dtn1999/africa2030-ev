@@ -1,5 +1,5 @@
+import { RenderBuilderContent } from "@/components/builder";
 import { builder } from "@builder.io/sdk";
-import { RenderBuilderContent } from "../../components/builder";
 import { notFound } from "next/navigation";
 
 // Builder Public API Key set in .env file
@@ -17,6 +17,9 @@ export default async function Page(props: PageProps) {
   const page = await builder
     // Get the page content from Builder with the specified options
     .get(builderModelName, {
+      options: {
+        locale: "Default",
+      },
       userAttributes: {
         // Use the page path specified in the URL to fetch the content
         urlPath: "/" + ((await props?.params)?.page?.join("/") || ""),
@@ -29,29 +32,27 @@ export default async function Page(props: PageProps) {
     notFound();
   }
 
-  console.log("page ", page);
-
   const header = await builder.get("header", {
+    model: "header",
     query: {
       id: page?.data?.header?.id,
     },
   });
 
-  console.log("header ", header);
-
-  const footer = await builder.get("footer", {
-    query: {
-      id: page?.data?.footer?.id,
-    },
-  });
-
-  console.log("footer ", footer);
-
   return (
-    <>
-      {header && <RenderBuilderContent content={header} model="header" />}
-      <RenderBuilderContent content={page} model={builderModelName} />
-      {footer && <RenderBuilderContent content={footer} model="footer" />}
-    </>
+    <main className="relative pt-[100px]">
+      {header && (
+        <RenderBuilderContent
+          locale="Default"
+          content={header}
+          model="header"
+        />
+      )}
+      <RenderBuilderContent
+        locale="Default"
+        content={page}
+        model={builderModelName}
+      />
+    </main>
   );
 }

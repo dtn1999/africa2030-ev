@@ -17,7 +17,6 @@ export interface ButtonProps {
 }
 
 export function CustomButton({ ...props }: ButtonProps) {
-  console.log("props ", props);
   const { attributes = {}, link, text, className, openLinkInNewTab } = props;
   const { key, ...restAttributes } = attributes;
   const Tag = link ? Link : "span";
