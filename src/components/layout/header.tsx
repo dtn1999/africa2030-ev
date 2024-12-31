@@ -10,6 +10,7 @@ import { useScroll } from "./use-scroll";
 import { NavItem } from "@/types/ui";
 import { extractNavigationLinks } from "@/lib/cms";
 import { Logo } from "./logo";
+import { usePathname } from "next/navigation";
 
 interface HeaderProps {
   navigation: any;
@@ -90,12 +91,16 @@ interface MenuItemProps {
 }
 
 function DesktopMenuItem({ data }: MenuItemProps) {
+  const pathname = usePathname();
   return (
     <Link
       href={data.href}
-      className="flex items-center px-6 space-x-[13px] hover:text-primary"
+      className="flex items-center px-6 space-x-[13px] hover:text-primary relative"
     >
       <span className=" font-semibold">{data.label}</span>
+      {pathname === data.href && (
+        <div className="w-[20px] h-1 rounded-lg bg-primary absolute left-3 bottom-0" />
+      )}
     </Link>
   );
 }
